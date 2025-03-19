@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>停車場查詢</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #map {
+            height: 500px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .search-box {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        input {
+            width: 250px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 15px;
+            font-size: 16px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        /* Hover 效果 */
+        button:hover {
+            background: darkblue;
+        }
+        /* 語音按鈕 Hover 效果 */
+        .voice-btn:hover {
+            background: green;
+        }
+        @media (max-width: 600px) {
+            input {
+                width: 80%;
+            }
+        }
+    </style>
+    <!-- 非同步載入 -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYWZ3gQKivj4Yz8EKSG_BFvhkIwhqUegM&libraries=marker,places&callback=initMap"></script>
+    <!-- 同步載入 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYWZ3gQKivj4Yz8EKSG_BFvhkIwhqUegM&libraries=places"></script>-->
+</head>
+<body>
+
+    <h1>停車場查詢</h1>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="輸入地點...">
+        <button onclick="searchParking()">搜尋</button>
+        <button onclick="startVoiceSearch()">🎤</button>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- 底部導航欄 -->
+    <div class="navbar">
+        <div class="nav-item">
+            <img src="home-icon.png" alt="首頁">
+            <span>首頁</span>
+        </div>
+        <div class="nav-item">
+            <img src="account-icon.png" alt="帳號">
+            <span>帳號</span>
+        </div>
+        <div class="nav-item">
+            <img src="favorite-icon.png" alt="收藏">
+            <span>收藏</span>
+        </div>
+        <div class="nav-item">
+            <img src="news-icon.png" alt="新聞">
+            <span>新聞</span>
+        </div>
+        <div class="nav-item">
+            <img src="settings-icon.png" alt="設定">
+            <span>設定</span>
+        </div>
+    </div>
+
+    <style>
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #ccc;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .nav-item img {
+            width: 30px;
+            height: 30px;
+        }
+        .nav-item span {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .nav-item:hover {
+            transform: scale(1.2);
+        }
+    </style>
+
+    <script>
+        let map;
+        let service;
+        let currentMarkers = [];  // 存所有停車場的標記
+        let currentInfoWindow = null;  // 存當前 InfoWindow
+
+        function initMap() { //點進網頁中地圖一開始出現的位置
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 24.1477, lng: 120.6736 },
+                zoom: 15,
+                mapId: "b810571e5842e54d"
+            });
+
+            service = new google.maps.places.PlacesService(map);
+        }
+
+
+        function searchParking() {
+            let searchText = document.getElementById("searchInput").value; // serachText存放輸入地點的字串
+            let request = {
+                query: searchText,
+                fields: ["name", "geometry"]
+            };
+
+            service.findPlaceFromQuery(request, function (results, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+                    let location = results[0].geometry.location;
+                    map.setCenter(location);
+
+                    // 搜尋該地點附近的停車場
+                    findNearbyParking(location);
+                } else {
+                    alert("找不到地點，請輸入其他內容");
+                }
+            });
+        }
+
+        function findNearbyParking(location) {
+            clearMarkers();
+
+            let lat = (typeof location.lat === "function") ? location.lat() : location.lat;
+            let lng = (typeof location.lng === "function") ? location.lng() : location.lng;
+
+            let request = {
+                location: new google.maps.LatLng(lat, lng),
+                radius: 1000,
+                type: "parking"
+            };
+            service.nearbySearch(request, function (results, status) {
+                console.log("`nearbySearch()` 回傳狀態:", status, "結果:", results);
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    results.forEach(place => {
+                        createMarker(place);
+                    });
+                } else {
+                    console.warn("找不到附近的停車場，API 狀態:", status);
+                }
+            });
+        }
+
+        function createMarker(place) {
+            let marker = new google.maps.marker.AdvancedMarkerElement({
+                position: place.geometry.location,
+                map: map,
+                title: place.name
+            });
+
+            currentMarkers.push(marker);
+
+            let infoWindow = new google.maps.InfoWindow({
+                content: place.name
+            });
+
+            marker.addListener("gmp-click", function () {
+                if (currentInfoWindow) {
+                    currentInfoWindow.close();
+                }
+                currentInfoWindow = infoWindow;
+                currentInfoWindow.open(map, marker);
+            });
+        }
+
+        function clearMarkers() {
+            currentMarkers.forEach(marker => marker.map = null);
+            currentMarkers = [];
+        }
+
+        function startVoiceSearch() { // 語音功能
+            let recognition = new window.webkitSpeechRecognition();
+            recognition.lang = "zh-TW";
+            recognition.onresult = function (event) {
+                document.getElementById("searchInput").value = event.results[0][0].transcript;
+                searchParking();
+            };
+            recognition.start();
+        }
+
+        document.addEventListener("DOMContentLoaded", function () { //按Enter自動搜尋
+            document.getElementById("searchInput").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    searchParking();
+                }
+            });
+        });
+
+        window.onload = initMap;
+    </script>
+
+</body>
+</html>
