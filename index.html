@@ -71,6 +71,23 @@
     .nav-item:hover {
       transform: scale(1.2);
     }
+
+    /* 導航鍵 */
+    .navigate-btn {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 5px 10px;
+      font-size: 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 20px; /* 圓角 */
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .navigate-btn:hover {
+      background-color: #218838;
+    }
   </style>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYWZ3gQKivj4Yz8EKSG_BFvhkIwhqUegM&libraries=marker,places&callback=initMap"></script>
 </head>
@@ -117,6 +134,8 @@
   <script>
     let map;
     let service;
+    let directionsService;
+    let directionsRenderer;
     let currentMarkers = [];
     let currentInfoWindow = null;
 
@@ -124,12 +143,17 @@
       map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 24.1477, lng: 120.6736 },
         zoom: 15,
-        mapId: "b810571e5842e54d"
+        mapId: "b810571e5842e54d",
+        mapTypeControl: false  // 把這行加進來就能移除地圖類型選單
       });
       service = new google.maps.places.PlacesService(map);
-      setTimeout(() => {
-        document.querySelectorAll(".gmnoprint").forEach(el => el.style.marginTop = "150px");
-      }, 500);
+      //
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer();
+      directionsRenderer.setMap(map);
+      // setTimeout(() => {
+      //   document.querySelectorAll(".gmnoprint").forEach(el => el.style.marginTop = "150px");
+      // }, 500);
     }
 
     function searchParking() {
@@ -171,12 +195,51 @@
         title: place.name
       });
       currentMarkers.push(marker);
-      let infoWindow = new google.maps.InfoWindow({ content: place.name });
+      //???
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+      // const navigateLink = `<a class='navigate-btn' href='https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}' target='_blank'>導航</a>`;
+
+      let infoWindow = new google.maps.InfoWindow({
+        content: `<div style='text-align:center;'>${place.name}<br><button class='navigate-btn' onclick='navigateTo(${lat}, ${lng})'>導航</button></div>`
+      });
+
       marker.addListener("gmp-click", function () {
         if (currentInfoWindow) currentInfoWindow.close();
         currentInfoWindow = infoWindow;
         currentInfoWindow.open(map, marker);
       });
+    }
+    //規劃路線到目標地點
+    function navigateTo(lat, lng) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const origin = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          const destination = { lat, lng };
+
+          directionsService.route(
+            {
+              origin,
+              destination,
+              travelMode: google.maps.TravelMode.DRIVING
+            },
+            (result, status) => {
+              if (status === google.maps.DirectionsStatus.OK) {
+                directionsRenderer.setDirections(result);
+              } else {
+                alert("無法規劃路線：" + status);
+              }
+            }
+          );
+        },
+        error => {
+          alert("無法取得您的位置：" + error.message);
+        }
+      );
     }
 
     function clearMarkers() {
