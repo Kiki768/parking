@@ -1,5 +1,156 @@
-<!-- 底部導航欄 -->
-<div class="navbar">
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>資訊頁面</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      padding-bottom: 70px; /* 給底部導航列留空間 */
+    }
+
+    .tab-container {
+      display: flex;
+      border-bottom: 2px solid #ccc;
+      background: white;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 15px 0;
+      text-align: center;
+      font-size: 18px;
+      cursor: pointer;
+      border-right: 1px solid #ccc;
+      background-color: white;
+      transition: background 0.2s;
+    }
+
+    .tab:last-child {
+      border-right: none;
+    }
+
+    .tab.active {
+      font-weight: bold;
+      border-bottom: 2px solid black;
+      background-color: #eee;
+    }
+
+    .content {
+      padding: 20px;
+      display: none;
+    }
+
+    .content.active {
+      display: block;
+    }
+
+    /* 底部導航列樣式 */
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+      z-index: 999;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .nav-item img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .nav-item span {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .nav-item:hover {
+      transform: scale(1.2);
+    }
+    /* 資訊的卡片*/
+    .card {
+      background-color: white;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-align: left;
+      font-size: 16px;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+        @media (max-width: 600px) {
+      .tab {
+        font-size: 16px;
+        padding: 12px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頁籤切換列 -->
+  <div class="tab-container">
+    <div class="tab active" onclick="switchTab(0)">即時路況</div>
+    <div class="tab" onclick="switchTab(1)">優惠資訊</div>
+  </div>
+
+  <!-- 分頁內容：即時路況 -->
+  <div id="tab-content-0" class="content active">
+    <!-- <h3>最新即時路況</h3> -->
+    <div class="card" onclick="window.open('https://1968.freeway.gov.tw', '_blank')">
+      🚧 國道一號台中路段壅塞，建議改道行駛
+    </div>
+    <div class="card">
+      🌧️ 大雨特報：市政北一路積水，請改道行駛
+    </div>
+    <div class="card">
+      🛻 忠明南路施工中，單向封閉至下午五點
+    </div>
+  </div>
+
+  <!-- 分頁內容：優惠資訊 -->
+  <div id="tab-content-1" class="content">
+    <!-- <h3>最新優惠資訊</h3> -->
+    <div class="card">
+      🎉 草悟道地下停車場週末首1小時免費（至4/30）
+    </div>
+    <div class="card">
+      🛍️ 大遠百滿500折2小時停車，快來逛街！
+    </div>
+    <div class="card">
+      📱 註冊會員即送10點停車點數，限時活動中
+    </div>
+  </div>
+
+  <!-- 底部導航列 -->
+  <div class="navbar">
     <div class="nav-item" onclick="location.href='index.html'">
       <img src="home-icon.png" alt="首頁">
       <span>首頁</span>
@@ -21,22 +172,18 @@
       <span>設定</span>
     </div>
   </div>
-  
-  <style>
-    .navbar {
-      position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-      display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #ccc;
+
+  <script>
+    function switchTab(index) {
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.content');
+
+      tabs.forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+        contents[i].classList.toggle('active', i === index);
+      });
     }
-    .nav-item {
-      display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s;
-    }
-    .nav-item img {
-      width: 30px; height: 30px;
-    }
-    .nav-item span {
-      font-size: 12px; margin-top: 5px;
-    }
-    .nav-item:hover {
-      transform: scale(1.2);
-    }
-  </style>
+  </script>
+
+</body>
+</html>

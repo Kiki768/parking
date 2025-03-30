@@ -1,5 +1,164 @@
-<!-- 底部導航欄 -->
-<div class="navbar">
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>支付設定</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding-bottom: 80px; /* 保留空間給底部導覽欄 */
+      background-color: #f8f8f8;
+    }
+
+    .container {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .box {
+      width: 90%;
+      max-width: 350px;
+      height: 180px;
+      margin: 0 auto 40px;
+      background-color: white;
+      border: 2px solid #ccc;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+
+    .box:hover {
+      transform: scale(1.05);
+      border-color: #00bcd4;
+      box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+    }
+
+    .plus-circle {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #00bcd4;
+      border-radius: 50%;
+      color: #00bcd4;
+      font-size: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-height: 1; /* 避免文字偏移 */
+      font-weight: bold;
+      transform: translateY(1px); /* 微調視覺偏差 */
+    }
+
+    .text {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .license-section {
+      margin-top: 20px;
+      color: gray;
+    }
+
+    .license-box {
+      margin-top: 10px;
+      width: 120px;
+      height: 70px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+
+    .license-box:hover {
+      transform: scale(1.1);
+      border-color: #00bcd4;
+      box-shadow: 0 0 8px rgba(0, 188, 212, 0.3);
+    }
+
+    /* .question-circle {
+      margin-top: 10px;
+      background-color: #7fd6e6;
+      color: white;
+      width: 32px;
+      height: 32px;
+      font-size: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    } */
+
+    /* 底部導航欄 */
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+      z-index: 999;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .nav-item img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-item span {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .nav-item:hover {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="box" onclick="alert('跳轉到新增支付工具頁面')">
+      <div class="plus-circle">＋</div>
+      <div class="text">新增信用卡、LINE PAY 或全盈+PAY<br>作為您的支付工具</div>
+    </div>
+
+    <div class="license-section">
+      <div>我的車牌號碼</div>
+      <div class="license-box" onclick="alert('跳轉到新增車牌頁面')">
+        <div class="plus-circle">＋</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部導航欄 -->
+  <div class="navbar">
     <div class="nav-item" onclick="location.href='index.html'">
       <img src="home-icon.png" alt="首頁">
       <span>首頁</span>
@@ -21,22 +180,6 @@
       <span>設定</span>
     </div>
   </div>
-  
-  <style>
-    .navbar {
-      position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-      display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #ccc;
-    }
-    .nav-item {
-      display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s;
-    }
-    .nav-item img {
-      width: 30px; height: 30px;
-    }
-    .nav-item span {
-      font-size: 12px; margin-top: 5px;
-    }
-    .nav-item:hover {
-      transform: scale(1.2);
-    }
-  </style>
+
+</body>
+</html>
