@@ -1,5 +1,169 @@
-<!-- 底部導航欄 -->
-<div class="navbar">
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>設定</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .settings-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding-bottom: 80px; /* 底部預留空間 */
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid #ccc;
+      background-color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .arrow {
+      font-size: 20px;
+      color: #888;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 28px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 30px;
+      transition: 0.3s;
+    }
+
+    .slider::before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    .switch input:checked + .slider {
+      background-color: #28a745;
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(22px);
+    }
+
+    .logout {
+      color: red;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .setting-item {
+        font-size: 16px;
+        padding: 16px;
+      }
+    }
+
+    /* 底部導航欄 */
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+      z-index: 999;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .nav-item img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .nav-item span {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .nav-item:hover {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="settings-container">
+    <div class="setting-item" onclick="alert('跳轉到操作手冊')">
+      操作手冊
+      <span class="arrow">›</span>
+    </div>
+
+    <div class="setting-item" onclick="alert('跳轉到常見Q&A')">
+      查看常見 Q&A
+      <span class="arrow">›</span>
+    </div>
+
+    <div class="setting-item" onclick="alert('跳轉到客服信箱')">
+      寫信給客服
+      <span class="arrow">›</span>
+    </div>
+
+    <div class="setting-item">
+      通知
+      <label class="switch">
+        <input type="checkbox" id="notificationToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item logout" onclick="alert('您已登出')">
+      帳號登出
+    </div>
+  </div>
+
+  <!-- 底部導航欄 -->
+  <div class="navbar">
     <div class="nav-item" onclick="location.href='index.html'">
       <img src="home-icon.png" alt="首頁">
       <span>首頁</span>
@@ -21,35 +185,6 @@
       <span>設定</span>
     </div>
   </div>
-  
-  <style>
-    .navbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: white;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      border-top: 1px solid #ccc;
-    }
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .nav-item img {
-      width: 30px;
-      height: 30px;
-    }
-    .nav-item span {
-      font-size: 12px;
-      margin-top: 5px;
-    }
-    .nav-item:hover {
-      transform: scale(1.2);
-    }
-  </style>
+
+</body>
+</html>

@@ -204,27 +204,24 @@
         mapTypeControl: false  // 把這行加進來就能移除地圖類型選單
       });
       service = new google.maps.places.PlacesService(map);
-      directionsService = new google.maps.DirectionsService();
-      directionsRenderer = new google.maps.DirectionsRenderer();
-      directionsRenderer.setMap(map);
+      // directionsService = new google.maps.DirectionsService();
+      // directionsRenderer = new google.maps.DirectionsRenderer();
+      // directionsRenderer.setMap(map);
   
-      const selected = JSON.parse(localStorage.getItem("selectedParking"));
+      const selected = JSON.parse(localStorage.getItem("selectedPlace"));
       if (selected && selected.lat && selected.lng) {
-        const pos = new google.maps.LatLng(selected.lat, selected.lng);
-        const marker = new google.maps.Marker({
-          position: pos,
-          map,
-          title: selected.name
-        });
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<strong>${selected.name}</strong><br>${selected.address || ''}`
-        });
-        marker.addListener("click", () => {
-          infoWindow.open(map, marker);
-        });
-        map.setCenter(pos);
+        const place = {
+          name: selected.name,
+          geometry: {
+            location: new google.maps.LatLng(selected.lat, selected.lng)
+          }
+        };
+        createMarker(place);
+        map.setCenter(place.geometry.location);
         map.setZoom(17);
-        localStorage.removeItem("selectedParking");
+        setTimeout(() => {
+          localStorage.removeItem("selectedPlace"); // ✅ 延遲清除，不影響顯示
+        }, 500);
       }
     }
 
@@ -271,6 +268,11 @@
       const lat = place.geometry.location.lat();
       const lng = place.geometry.location.lng();
       // const navigateLink = `<a class='navigate-btn' href='https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}' target='_blank'>導航</a>`;
+      // 取得目前收藏資料
+      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+      const isFavorited = favorites.some(p => p.name === place.name);
+      
+      const heartIcon = isFavorited ? 'heart-red.png' : 'heart.png';
 
       let infoWindow = new google.maps.InfoWindow({
         content: `
@@ -286,7 +288,7 @@
                 <span>回報</span>
               </div>
               <div class="icon-button" onclick="toggleFavorite(this, '${place.name}', ${lat}, ${lng})">
-                <img src="heart.png" class="heart" alt="收藏">
+                <img src="${heartIcon}" class="heart" alt="收藏">
                 <span>收藏</span>
               </div>
             </div>
