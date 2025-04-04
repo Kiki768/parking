@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>個人檔案</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+    .container {
+      padding: 20px;
+      max-width: 480px;
+      margin: 0 auto;
+      background-color: white;
+      height: 100vh;
+      position: relative;
+      box-sizing: border-box;
+    }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 40px;
+      cursor: pointer;
+    }
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: #ddd;
+      margin: 60px auto 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      color: #aaa;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 18px;
+      border-bottom: 1px solid #ccc;
+    }
+    .info-row:last-child {
+      border-bottom: none;
+    }
+    .edit-button {
+      margin-top: 40px;
+      width: 80px;
+      padding: 8px;
+      border: 2px solid #009688;
+      border-radius: 20px;
+      background-color: transparent;
+      color: #009688;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .edit-button:hover {
+      background-color: #009688;
+      color: white;
+    }
+    .button-container {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-button" onclick="history.back()">&#x2039;</div>
+    <div class="profile-pic">👤</div>
+
+    <div class="info-row">
+      <span>姓名</span>
+      <span>王小明</span>
+    </div>
+    <div class="info-row">
+      <span>手機號碼</span>
+      <span>0912345678</span>
+    </div>
+    <div class="info-row">
+      <span>電子信箱</span>
+      <span>a123456@gmail.com</span>
+    </div>
+
+    <div class="button-container">
+      <button class="edit-button">修改</button>
+    </div>
+  </div>
+</body>
+</html>
