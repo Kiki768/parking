@@ -30,7 +30,7 @@
       align-items: center;        /* 垂直置中 */
       gap: 10px;
       max-width: 90vw;
-      flex-wrap: nowrap;          /* ❗️禁止換行 */
+      flex-wrap: nowrap;          /* 禁止換行 */
     }
 
     .overlay-controls input {
@@ -217,6 +217,7 @@
   <div class="overlay-controls">
     <input type="text" id="searchInput" placeholder="輸入地點...">
     <button onclick="searchParking()">搜尋</button>
+    <button onclick="navigateFromSearch()">一鍵導航</button> <!-- 一鍵導航 -->
     <button onclick="startVoiceSearch()">🎤</button>
   </div>
 
@@ -399,9 +400,29 @@
         removeFavorite(name);
       } else {
         img.src = 'heart-red.png';
-        saveFavorite({ name, lat, lng, address });
+        // saveFavorite({ name, lat, lng, address });
+
+        // 取得地址後再儲存收藏
+        getAddressFromLatLng(lat, lng, function (address) {
+          saveFavorite({ name, lat, lng, address });
+        });
       }
     }
+
+    // 使用座標取得地址
+    function getAddressFromLatLng(lat, lng, callback) {
+      const geocoder = new google.maps.Geocoder();
+      const latlng = { lat: lat, lng: lng };
+
+      geocoder.geocode({ location: latlng }, function (results, status) {
+        if (status === "OK" && results[0]) {
+          callback(results[0].formatted_address);
+        } else {
+          callback("無法取得地址");
+        }
+      });
+    }
+
     // 儲存收藏資訊
     function saveFavorite(place) {
       const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
@@ -445,6 +466,61 @@
       };
       recognition.start();
     }
+
+    // 一鍵導航功能
+    function navigateFromSearch() {
+      let searchText = document.getElementById("searchInput").value;
+      let request = {
+        query: searchText,
+        fields: ["name", "geometry"]
+      };
+
+      service.findPlaceFromQuery(request, function (results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+          let location = results[0].geometry.location;
+
+          // 搜尋附近停車場
+          let nearbyRequest = {
+            location,
+            radius: 1000,
+            type: "parking"
+          };
+
+          service.nearbySearch(nearbyRequest, function (places, nearbyStatus) {
+            if (nearbyStatus === google.maps.places.PlacesServiceStatus.OK && places.length > 0) {
+              const nearest = places[0];
+
+              // // 清除舊的 marker（選擇性）
+              // clearMarkers();
+
+              // 使用自己的 createMarker，讓它有導航/收藏/回報
+              createMarker(nearest);
+
+              // 聚焦地圖
+              map.setCenter(nearest.geometry.location);
+              map.setZoom(17);
+
+              // 延遲一秒後導航
+              setTimeout(() => {
+                const lat = nearest.geometry.location.lat();
+                const lng = nearest.geometry.location.lng();
+                const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+                window.open(url, '_blank');
+              }, 1000);
+
+            } else {
+              alert("找不到附近的停車場");
+            }
+          });
+
+        } else {
+          alert("找不到地點，請輸入其他內容");
+        }
+      });
+    }
+
+
+
 
     document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("searchInput").addEventListener("keypress", function (event) {
