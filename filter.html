@@ -11,7 +11,7 @@
       background: #f9f9f9;
     }
 
-   header {
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -49,15 +49,17 @@
     }
 
     .circle-button {
-      padding: 10px 18px;
+      padding: 10px 12px;       /* 原本是 10px 18px，縮小左右 padding */
       border-radius: 20px;
       background: #eee;
       border: none;
-      margin: 6px;
+      margin: 4px 0;          /* 原本是 6px，縮小間距 */
       cursor: pointer;
-      font-size: 16px;
+      font-size: 15px;
       transition: background 0.3s;
+      white-space: nowrap;      /* 防止按鈕文字換行 */
     }
+
 
     .circle-button.active {
       background: #333;
@@ -209,13 +211,14 @@
   <!-- 車種篩選 -->
   <div class="section">
     <div class="section-title">車種篩選</div>
-    <div class="button-scroll">
+    <div class="vehicle-buttons">
       <button class="circle-button" onclick="toggleActive(this)">汽車</button>
       <button class="circle-button" onclick="toggleActive(this)">機車</button>
       <button class="circle-button" onclick="toggleActive(this)">充電樁</button>
       <button class="circle-button" onclick="toggleActive(this)">共享單車</button>
     </div>
   </div>
+  
 
 
 <div class="section">
@@ -255,7 +258,7 @@
         valueDisplay.style.left = `${percent * 100}%`; // 動態移動位置
     }
 
-
+    // 清除所有按扭
     function resetFilters() {
         // Reset toggle
         document.getElementById('bookingToggle').checked = false;
