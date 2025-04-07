@@ -11,20 +11,23 @@
       background: #f9f9f9;
     }
 
-    header {
+   header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 16px;
+      padding: 10px 8px; /* 左右只留 8px */
       background-color: white;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
-    .back-button{
+
+    .back-button {
       font-size: 40px;
       background: none;
       border: none;
       cursor: pointer;
+      margin-left: 0;      /* 先清除預設 */
+      padding-left: 8px;   /* 加 padding 讓它有安全距離 */
     }
 
     h1 {
