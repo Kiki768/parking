@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>道路設施問題回報</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 16px;
+      background-color: #fff;
+      min-height: 100vh;
+    }
+
+    .header {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid #ccc;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .back-button {
+      position: absolute;
+      left: 16px;
+      font-size: 40px;
+      cursor: pointer;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .form-section {
+      padding: 16px 0;
+    }
+
+    .form-section label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .form-section input[type="text"],
+    .form-section textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      resize: none;
+    }
+
+    /* .form-section input[type="file"] {
+      margin-bottom: 20px;
+    } */
+    .upload-box {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .upload-box label {
+      display: block;
+      width: 100px;
+      height: 100px;
+      margin: 10px 0;
+      border: 2px dashed #ccc;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .upload-box label:hover {
+      background-color: #f0f0f0;
+    }
+
+    .upload-box input[type="file"] {
+      display: none;
+    }
+
+
+    .checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 8px;
+    }
+
+    .report-submit {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 24px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: block;
+      margin: 24px auto 0;
+    }
+
+    .report-submit:hover {
+      background-color: #218838;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 12px;
+      }
+
+      .report-submit {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div class="back-button" onclick="history.back()">‹</div>
+      <div>道路設施問題回報</div>
+    </div>
+    
+    <form>
+      <div class="form-section">
+        <div class="checkbox-list">
+          <label><input type="checkbox" name="problem" value="破洞"> 路面破洞</label>
+          <label><input type="checkbox" name="problem" value="號誌"> 號誌異常</label>
+          <label><input type="checkbox" name="problem" value="標線模糊"> 標線不清</label>
+          <label><input type="checkbox" name="problem" value="路燈"> 路燈故障</label>
+          <label><input type="checkbox" name="problem" value="標誌錯誤"> 道路標誌記號錯誤或損壞</label>
+          <label><input type="checkbox" name="problem" value="其他"> 其他</label>
+        </div>
+
+        <label for="location">地點：</label>
+        <input type="text" id="location" name="location" placeholder="請輸入文字">
+
+        <label for="description">描述：</label>
+        <textarea id="description" name="description" rows="4" placeholder="請輸入文字說明..."></textarea>
+
+        <div class="upload-box">
+          <label>
+            + 上傳照片
+            <input type="file" name="photo" accept="image/*">
+          </label>
+        </div>
+        
+
+        <button type="submit" class="report-submit">提交</button>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>
