@@ -243,6 +243,40 @@
       transform: rotate(15deg);
     }
 
+    /* 道路回報系統 */
+    .highway-button {
+      position: absolute;
+      top: 70px; /* 篩選按鈕下方，視需要微調 */
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+      cursor: pointer;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .highway-button img {
+      width: 30px;
+      height: 30px;
+      transition: transform 0.3s ease;
+    }
+
+    .highway-button:hover {
+      background-color: #e0e0e0;
+      transform: scale(1.1);
+    }
+
+    .highway-button:hover img {
+      transform: rotate(-15deg);
+    }
+
+
   </style>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYWZ3gQKivj4Yz8EKSG_BFvhkIwhqUegM&libraries=marker,places&callback=initMap"></script>
 </head>
@@ -326,6 +360,11 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- 道路回報按鈕 -->
+  <div class="highway-button" title="道路回報" onclick="location.href='road_report.html'">
+    <img src="highway-icon.png" alt="道路回報">
   </div>
   
   <script>
