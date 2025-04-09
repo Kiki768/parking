@@ -8,68 +8,60 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
+      background: #f9f9f9;
     }
 
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 16px;
-      background-color: #fff;
-      min-height: 100vh;
-    }
-
-    .header {
-      position: relative;
+    header {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      padding: 16px 0;
-      border-bottom: 1px solid #ccc;
-      font-size: 20px;
-      font-weight: bold;
+      padding: 10px 8px;
+      background-color: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .back-button {
-      position: absolute;
-      left: 16px;
       font-size: 40px;
+      background: none;
+      border: none;
       cursor: pointer;
+      padding-left: 8px;
     }
 
-    h2 {
-      margin: 0;
+    h1 {
       font-size: 20px;
-      font-weight: bold;
+      margin: 0;
     }
 
-    .form-section {
-      padding: 16px 0;
+    form {
+      padding: 24px 16px;
+      background: white;
+      min-height: 100vh;
     }
 
-    .form-section label {
-      display: block;
-      margin-bottom: 10px;
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-group label {
       font-size: 16px;
     }
 
-    .form-section input[type="text"],
-    .form-section textarea {
+    input[type="text"],
+    textarea {
       width: 100%;
       padding: 10px;
       font-size: 16px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-top: 8px;
-      margin-bottom: 16px;
       box-sizing: border-box;
-      resize: none;
+      margin-bottom: 16px;
+      resize: none; /* 禁止拉伸 */
     }
 
-    /* .form-section input[type="file"] {
-      margin-bottom: 20px;
-    } */
     .upload-box {
       display: flex;
       justify-content: flex-start;
@@ -99,14 +91,6 @@
       display: none;
     }
 
-
-    .checkbox-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-top: 8px;
-    }
-
     .report-submit {
       background-color: #28a745;
       color: white;
@@ -125,53 +109,57 @@
     }
 
     @media (max-width: 480px) {
-      .container {
-        padding: 12px;
+      form {
+        padding: 16px;
       }
 
       .report-submit {
         width: 100%;
+        font-size: 15px;
+        padding: 10px 20px;
+      }
+
+      .checkbox-group label {
+        font-size: 15px;
+      }
+
+      input[type="text"],
+      textarea {
+        font-size: 15px;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="header">
-      <div class="back-button" onclick="history.back()">‹</div>
-      <div>道路設施問題回報</div>
+  <header>
+    <button class="back-button" onclick="history.back()">‹</button>
+    <h1>道路設施問題回報</h1>
+    <div style="width: 40px;"></div> <!-- 占位符，讓 h1 可以置中 -->
+  </header>
+
+  <form>
+    <div class="checkbox-group">
+      <label><input type="checkbox" name="problem" value="破洞"> 路面破洞</label>
+      <label><input type="checkbox" name="problem" value="號誌"> 號誌異常</label>
+      <label><input type="checkbox" name="problem" value="標線模糊"> 標線不清</label>
+      <label><input type="checkbox" name="problem" value="路燈"> 路燈故障</label>
+      <label><input type="checkbox" name="problem" value="標誌錯誤"> 道路標誌記號錯誤或損壞</label>
+      <label><input type="checkbox" name="problem" value="其他"> 其他</label>
     </div>
-    
-    <form>
-      <div class="form-section">
-        <div class="checkbox-list">
-          <label><input type="checkbox" name="problem" value="破洞"> 路面破洞</label>
-          <label><input type="checkbox" name="problem" value="號誌"> 號誌異常</label>
-          <label><input type="checkbox" name="problem" value="標線模糊"> 標線不清</label>
-          <label><input type="checkbox" name="problem" value="路燈"> 路燈故障</label>
-          <label><input type="checkbox" name="problem" value="標誌錯誤"> 道路標誌記號錯誤或損壞</label>
-          <label><input type="checkbox" name="problem" value="其他"> 其他</label>
-        </div>
 
-        <label for="location">地點：</label>
-        <input type="text" id="location" name="location" placeholder="請輸入文字">
+    <input type="text" name="location" placeholder="地點（請輸入文字）">
+    <textarea name="description" rows="4" placeholder="文字敘述..."></textarea>
 
-        <label for="description">描述：</label>
-        <textarea id="description" name="description" rows="4" placeholder="請輸入文字說明..."></textarea>
+    <div class="upload-box">
+      <label>
+        + 上傳照片
+        <input type="file" name="photo" accept="image/*">
+      </label>
+    </div>
 
-        <div class="upload-box">
-          <label>
-            + 上傳照片
-            <input type="file" name="photo" accept="image/*">
-          </label>
-        </div>
-        
-
-        <button type="submit" class="report-submit">提交</button>
-      </div>
-    </form>
-  </div>
+    <button type="button" class="report-submit">提交</button>
+  </form>
 
 </body>
 </html>
