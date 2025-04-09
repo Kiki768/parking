@@ -161,7 +161,7 @@
       text-align: center;
       position: relative;
     }
-    .report-close {
+    .report-close { /* 右上角的叉叉按鈕 */
       position: absolute;
       top: 10px; right: 10px;
       font-size: 20px;
@@ -309,7 +309,25 @@
     <img src="filter-icon.png" alt="篩選">
   </div>
 
-
+  <!-- 預約車格視窗詢問-->
+  <div id="confirmModal" class="report-modal">
+    <div class="report-content">
+      <div class="report-close" onclick="closeConfirmModal()">✕</div> <!-- 右上角叉叉 -->
+      <h2>是否預約車位</h2>
+      <p>需付 1 小時的押金<br>車位保留至預計抵達時間後 20 分鐘</p>
+      <div style="display: flex; justify-content: center; gap: 50px; margin-top: 20px;">
+        <button onclick="confirmNavigate(true)" 
+                style="background-color: #28a745; color: white; padding: 8px 20px; border-radius: 8px; font-size: 18px; border: none; outline: none; box-shadow: none;">
+                是
+        </button>
+        <button onclick="confirmNavigate(true)" 
+                style="background-color: #de3232; color: white; padding: 8px 20px; border-radius: 8px; font-size: 18px; border: none; outline: none; box-shadow: none;">
+                      否
+        </button>
+      </div>
+    </div>
+  </div>
+  
   <script>
     let map;
     let service;
@@ -319,6 +337,7 @@
     let destinationPoint = null;
     let currentMarkers = [];
     let currentInfoWindow = null;
+    let pendingNavigation = null; // 儲存預約是否
     
 
     function initMap() {
@@ -475,21 +494,44 @@
       localStorage.setItem('favorites', JSON.stringify(favorites));
     }
 
-    // 回報功能
+    // 回報停車場問題功能
     function reportIssue(name) {
       document.getElementById("reportModal").style.display = "flex";
     }
 
+    // 回報停車場問題的叉叉按鈕
     function closeReportModal() {
       document.getElementById("reportModal").style.display = "none";
     }
 
+    //預約視窗功能按鈕
+    function showConfirmModal(navigationCallback) {
+      pendingNavigation = navigationCallback;
+      document.getElementById('confirmModal').style.display = 'flex';
+    }
+
+    function confirmNavigate(isConfirmed) {
+      document.getElementById('confirmModal').style.display = 'none';
+      if (isConfirmed && typeof pendingNavigation === 'function') {
+        pendingNavigation();
+      }
+      pendingNavigation = null;
+    }
+    // 回報道路問題的叉叉按鈕
+    function closeConfirmModal() {
+      document.getElementById("confirmModal").style.display = "none";
+    }
+
+
     // 跳轉至google map導航
     function navigateTo(lat, lng) {
-      const destination = `${lat},${lng}`;
-      const url = `https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving`;
-      window.open(url, '_blank');
+      showConfirmModal(() => {
+        const destination = `${lat},${lng}`;
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving`;
+        window.open(url, '_blank');
+      });
     }
+
 
     function clearMarkers() {
       currentMarkers.forEach(marker => marker.map = null);
@@ -528,10 +570,6 @@
           service.nearbySearch(nearbyRequest, function (places, nearbyStatus) {
             if (nearbyStatus === google.maps.places.PlacesServiceStatus.OK && places.length > 0) {
               const nearest = places[0];
-
-              // // 清除舊的 marker（選擇性）
-              // clearMarkers();
-
               // 使用自己的 createMarker，讓它有導航/收藏/回報
               createMarker(nearest);
 
@@ -539,13 +577,13 @@
               map.setCenter(nearest.geometry.location);
               map.setZoom(17);
 
-              // 延遲一秒後導航
-              setTimeout(() => {
-                const lat = nearest.geometry.location.lat();
-                const lng = nearest.geometry.location.lng();
+              // ⬇ 這裡改成呼叫彈窗
+              const lat = nearest.geometry.location.lat();
+              const lng = nearest.geometry.location.lng();
+              showConfirmModal(() => {
                 const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
                 window.open(url, '_blank');
-              }, 1000);
+              });
 
             } else {
               alert("找不到附近的停車場");
