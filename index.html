@@ -14,64 +14,64 @@
       height: 100%; width: 100%; position: relative;
     }
     
-    .overlay-controls {
+     /* 新增下拉搜尋區塊樣式 */
+     .search-wrapper {
       position: absolute;
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.95);
-      padding: 10px 15px;
-      border-radius: 12px;
       z-index: 1000;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-
-      display: flex;
-      flex-direction: row;        /* 橫向排列 */
-      align-items: center;        /* 垂直置中 */
-      gap: 10px;
-      max-width: 90vw;
-      flex-wrap: nowrap;          /* 禁止換行 */
     }
 
-    .overlay-controls input {
-      width: 240px;
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .overlay-controls button {
-      padding: 8px 12px;
+    .search-toggle-button {
+      padding: 8px 16px;
       font-size: 16px;
       background: blue;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s ease;
-      white-space: nowrap;
+    }
+    .search-toggle-button:hover {
+      background: darkblue;
     }
 
-    /* 手機版：直向排列 */
-    @media (max-width: 600px) {
-      .overlay-controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .overlay-controls input,
-      .overlay-controls button {
-        width: 100%;
-      }
+    .search-expand {
+      margin-top: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 10px 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      width: 280px;
+      align-items: center;
     }
 
+    .search-expand input,
+    .search-expand button {
+      width: 95%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .search-expand button {
+      background-color: blue;
+      color: white;
+      border: none;
+    }
+    .search-expand button:hover {
+      background-color: darkblue;
+    }
 
-    button:hover { background: darkblue; }
+    /* button:hover { background: darkblue; }
     .voice-btn:hover { background: green; }
     @media (max-width: 600px) {
       input { width: 80%; }
-    }
+    } */
     /* 個人資料 */
     .avatar-container {
       position: absolute; top: 10px; left: 0px; z-index: 1001;
@@ -281,11 +281,14 @@
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYWZ3gQKivj4Yz8EKSG_BFvhkIwhqUegM&libraries=marker,places&callback=initMap"></script>
 </head>
 <body>
-  <div class="overlay-controls">
-    <input type="text" id="searchInput" placeholder="輸入地點...">
-    <button onclick="searchParking()">搜尋</button>
-    <button onclick="navigateFromSearch()">一鍵導航</button> <!-- 一鍵導航 -->
-    <button onclick="startVoiceSearch()">🎤</button>
+  <div class="search-wrapper">
+    <button class="search-toggle-button" onclick="toggleSearchBox()">🔍</button>
+    <div class="search-expand">
+      <input type="text" id="searchInput" placeholder="輸入地點...">
+      <button onclick="searchParking()">搜尋</button>
+      <button onclick="navigateFromSearch()">一鍵導航</button>
+      <button onclick="startVoiceSearch()">🎤</button>
+    </div>
   </div>
 
   <div class="avatar-container">
@@ -408,6 +411,15 @@
       }
     }
 
+     // 新增 toggleSearchBox 函式，點「搜尋」按鈕才展開輸入欄與功能按鈕
+     function toggleSearchBox() {
+      const box = document.querySelector(".search-expand");
+      if (box.style.display === "none" || box.style.display === "") {
+        box.style.display = "flex";
+      } else {
+        box.style.display = "none";
+      }
+    }
     function searchParking() {
       let searchText = document.getElementById("searchInput").value;
       let request = { query: searchText, fields: ["name", "geometry"] };
