@@ -67,11 +67,6 @@
       background-color: darkblue;
     }
 
-    /* button:hover { background: darkblue; }
-    .voice-btn:hover { background: green; }
-    @media (max-width: 600px) {
-      input { width: 80%; }
-    } */
     /* 個人資料 */
     .avatar-container {
       position: absolute; top: 10px; left: 0px; z-index: 1001;
@@ -112,6 +107,19 @@
       transform: scale(1.2);
     }
 
+    /* 停車場資訊那邊的滑動條 */
+    .scroll-info {
+      max-height: 80px;
+      overflow-y: auto;
+      font-size: 13px;
+      line-height: 1.4;
+      text-align: left;
+      padding: 10px ;
+      margin: 6px auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
     /* 導航鍵 */
     .icon-button {
       display: flex;
@@ -473,6 +481,12 @@
         content: `
           <div style='text-align:center; font-family: Arial, sans-serif;'>
             <div style='font-weight:bold; margin-bottom:8px;'>${place.name}</div>
+            <div class="scroll-info">
+              <div><u>總車位</u> 64 位　<font color="red">剩餘 5 位</font></div>
+              <div>平日 $40 / hr</span>　假日 $60 / hr</span></div>
+              <div>營業時間 : 9:00 - 22:00</div>
+              <div>電話 : 0987-565-771</div>
+            </div>
             <div style='display:flex; justify-content:center; gap:12px;'>
               <div class="icon-button" onclick="navigateTo(${lat}, ${lng})">
                 <img src="navigate.png" alt="導航"> 
