@@ -195,6 +195,17 @@
     <button class="preset-button" onclick="resetFilters()">清除</button>
   </header>
 
+  <!-- 自動換位導航區塊 -->
+  <div class="section">
+    <div class="label-with-toggle">
+      <span class="section-title">自動換位導航</span>
+      <label class="switch">
+        <input type="checkbox" id="autoNavigateToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
   <!-- 預約車位區塊 -->
   <div class="section">
     <div class="label-with-toggle">
@@ -262,7 +273,7 @@
     function resetFilters() {
         // Reset toggle
         document.getElementById('bookingToggle').checked = false;
-
+        document.getElementById('autoNavigateToggle').checked = false;
         // Reset range
         const range = document.getElementById('priceRange');
         range.value = 0;
