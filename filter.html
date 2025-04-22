@@ -200,7 +200,7 @@
     <div class="label-with-toggle">
       <span class="section-title">自動換位導航</span>
       <label class="switch">
-        <input type="checkbox" id="autoNavigateToggle">
+        <input type="checkbox" id="autoNavigateToggle" onchange="saveState()">  <!-- 在這裡加了 onchange 事件 -->
         <span class="slider"></span>
       </label>
     </div>
@@ -211,14 +211,12 @@
     <div class="label-with-toggle">
       <span class="section-title">預約車位</span>
       <label class="switch">
-        <input type="checkbox" id="bookingToggle">
+        <input type="checkbox" id="bookingToggle" onchange="saveState()">  <!-- 在這裡加了 onchange 事件 -->
         <span class="slider"></span>
       </label>
     </div>
   </div>
   
-  
-
   <!-- 車種篩選 -->
   <div class="section">
     <div class="section-title">車種篩選</div>
@@ -229,33 +227,34 @@
       <button class="circle-button" onclick="toggleActive(this)">共享單車</button>
     </div>
   </div>
-  
-
-
-<div class="section">
-  <div class="section-title">價格範圍</div>
-  <div class="range-container">
-    <input type="range" min="0" max="200" value="0" id="priceRange" oninput="updatePrice()">
-    <div class="range-value" id="floatingValue">0</div>
-  </div>
-  <div class="slider-labels">
-    <span>0</span>
-    <span>200</span>
-  </div>
-</div>
-
 
   <div class="section">
+    <div class="section-title">價格範圍</div>
+    <div class="range-container">
+      <input type="range" min="0" max="200" value="0" id="priceRange" oninput="updatePrice()">
+      <div class="range-value" id="floatingValue">0</div>
+    </div>
+    <div class="slider-labels">
+      <span>0</span>
+      <span>200</span>
+    </div>
+  </div>
+
+  <!-- 車格種類 -->
+  <div class="section">
     <div class="section-title">車格種類</div>
-    <button class="circle-button" onclick="toggleActive(this)">一般</button>
-    <button class="circle-button" onclick="toggleActive(this)">身障</button>
-    <button class="circle-button" onclick="toggleActive(this)">親子</button>
-    <button class="circle-button" onclick="toggleActive(this)">卸貨</button>
+    <div class="slot-buttons">
+      <button class="circle-button" onclick="toggleActive(this)">一般</button>
+      <button class="circle-button" onclick="toggleActive(this)">身障</button>
+      <button class="circle-button" onclick="toggleActive(this)">親子</button>
+      <button class="circle-button" onclick="toggleActive(this)">卸貨</button>
+    </div>
   </div>
 
   <script>
     function toggleActive(el) {
       el.classList.toggle('active');
+      saveState();
     }
 
     // 價格範圍
@@ -267,6 +266,7 @@
 
         valueDisplay.textContent = value;
         valueDisplay.style.left = `${percent * 100}%`; // 動態移動位置
+        saveState();
     }
 
     // 清除所有按扭
@@ -281,9 +281,65 @@
 
         // Remove all active buttons
         document.querySelectorAll('.circle-button').forEach(btn => btn.classList.remove('active'));
+        
+        // 清除localStorage
+        localStorage.clear();
+      }
+
+    // 儲存當前的篩選狀態
+    function saveState() {
+        const autoNavigateState = document.getElementById('autoNavigateToggle').checked;
+        const bookingState = document.getElementById('bookingToggle').checked;
+        const priceValue = document.getElementById('priceRange').value;
+        
+        // 儲存車種篩選選項（車種篩選在 .vehicle-buttons 裡）
+        const activeVehicles = Array.from(document.querySelectorAll('.vehicle-buttons .circle-button.active')).map(button => button.textContent);
+        
+        // 儲存車格種類篩選選項（車格篩選在 .slot-buttons 裡）
+        const activeSlots = Array.from(document.querySelectorAll('.slot-buttons .circle-button.active')).map(button => button.textContent);
+
+        const state = {
+            autoNavigate: autoNavigateState,
+            booking: bookingState,
+            price: parseInt(priceValue),  // 儲存價格為數字
+            vehicles: activeVehicles,  // 儲存車種篩選選項
+            slots: activeSlots         // 儲存車格種類篩選選項
+        };
+
+        localStorage.setItem('filterState', JSON.stringify(state));
     }
 
+    // 載入篩選狀態
+    function loadState() {
+        const savedState = localStorage.getItem('filterState');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            
+            // 設定自動換位導航和預約車位的選項
+            document.getElementById('autoNavigateToggle').checked = state.autoNavigate;
+            document.getElementById('bookingToggle').checked = state.booking;
+
+            // 設定價格範圍
+            document.getElementById('priceRange').value = state.price;
+            updatePrice();
+
+            // 設定車種篩選按鈕
+            state.vehicles.forEach(vehicle => {
+                const button = Array.from(document.querySelectorAll('.vehicle-buttons .circle-button')).find(b => b.textContent === vehicle);
+                if (button) button.classList.add('active');
+            });
+
+            // 設定車格種類篩選按鈕
+            state.slots.forEach(slot => {
+                const button = Array.from(document.querySelectorAll('.slot-buttons .circle-button')).find(b => b.textContent === slot);
+                if (button) button.classList.add('active');
+            });
+        }
+    }
+
+
     window.onload = () => {
+        loadState(); // 載入狀態
         updatePrice();
     };
 
