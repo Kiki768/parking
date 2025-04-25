@@ -416,6 +416,9 @@
       });
       service = new google.maps.places.PlacesService(map);
 
+      // 延遲載入 TDX 停車資料
+      loadTDXData();
+
       // 檢查 localStorage 收藏跳轉
       const selected = JSON.parse(localStorage.getItem("selectedPlace"));
       if (selected && selected.lat && selected.lng) {
@@ -443,8 +446,6 @@
           localStorage.removeItem("selectedPlace");
         });
       }
-      // 延遲載入 TDX 停車資料
-      loadTDXData();
     }
 
 
@@ -815,7 +816,7 @@
             <div class="scroll-info">
               <div><u>總車位</u> ${totalSpaces} 位</div>
               <div><font color="red">${carStr}${motorStr}${evStr}</font></div>
-              <div>${fareDesc}</div>
+              <div>汽車: 50 元 / 小時</div>
               <div>營業時間：${hours}</div>
               <div>電話：${phone}</div>
             </div>
