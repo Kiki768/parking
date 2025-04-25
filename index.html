@@ -416,9 +416,6 @@
       });
       service = new google.maps.places.PlacesService(map);
 
-      // 延遲載入 TDX 停車資料
-      loadTDXData();
-
       // 檢查 localStorage 收藏跳轉
       const selected = JSON.parse(localStorage.getItem("selectedPlace"));
       if (selected && selected.lat && selected.lng) {
@@ -431,7 +428,7 @@
           },
           tdx: typeof selected.tdx === 'object' ? selected.tdx : {
             totalSpaces: '無資訊',
-            availableSpaces: '無資訊',
+            availableSpaces: {},  
             fareDescription: '價格：無資訊',
             phone: '無資訊',
             hours: '無資訊'
@@ -443,9 +440,15 @@
           createMarker(place);
           map.setCenter(place.geometry.location);
           map.setZoom(17);
-          localStorage.removeItem("selectedPlace");
+
+          // 延遲 1 秒再刪除 localStorage，確保地圖不會馬上被 reset
+          setTimeout(() => {
+            localStorage.removeItem("selectedPlace");
+          }, 1000);
         });
+
       }
+      loadTDXData();
     }
 
 
@@ -531,10 +534,12 @@
         // });
         
         // 直接使用預設位置，不使用 geolocation
-        const defaultLocation = { lat: 24.1477, lng: 120.6736 };
-        map.setCenter(defaultLocation);
-        findNearbyTDXParking(defaultLocation, tdxCarParks);
-
+        // 修改後：
+        if (!localStorage.getItem("selectedPlace")) {
+          const defaultLocation = { lat: 24.1477, lng: 120.6736 };
+          map.setCenter(defaultLocation);
+          findNearbyTDXParking(defaultLocation, tdxCarParks);
+        }
       } catch (err) {
         console.error("載入 TDX 停車場資料失敗：", err.message);
       }
@@ -792,6 +797,7 @@
       const fareDesc = formatFareDescription(tdxInfo.fareDescription);
       const phone = tdxInfo.phone || '無提供';
       const hours = tdxInfo.hours;  // 格式化營業時間
+      
 
       let carStr = availableSpaces.car
       ? `汽車剩餘：${availableSpaces.car.available}/${availableSpaces.car.total} 位<br>`
