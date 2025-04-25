@@ -573,32 +573,32 @@
           let location = results[0].geometry.location;
           map.setCenter(location);
           findNearbyTDXParking(location, tdxCarParks);
-          // 額外搜尋 Google Maps 附近停車場（作為補充）
-          const nearbyRequest = {
-            location: location,
-            radius: 1000,
-            type: "parking"
-          };
+          // // 額外搜尋 Google Maps 附近停車場（作為補充）
+          // const nearbyRequest = {
+          //   location: location,
+          //   radius: 1000,
+          //   type: "parking"
+          // };
 
-          service.nearbySearch(nearbyRequest, function (places, nearbyStatus) {
-            if (nearbyStatus === google.maps.places.PlacesServiceStatus.OK && places.length > 0) {
-              // 遍歷每個 Google 提供的停車場
-              places.forEach(place => {
-                const markerData = {
-                  name: place.name,
-                  geometry: place.geometry,
-                  tdx: {
-                    totalSpaces: '未知',
-                    availableSpaces: '未知',
-                    fareDescription: '價格：無資訊',
-                    phone: '無資訊',
-                    hours: '無資訊'
-                  }
-                };
-                createMarker(markerData);
-              });
-            }
-          });
+          // service.nearbySearch(nearbyRequest, function (places, nearbyStatus) {
+          //   if (nearbyStatus === google.maps.places.PlacesServiceStatus.OK && places.length > 0) {
+          //     // 遍歷每個 Google 提供的停車場
+          //     places.forEach(place => {
+          //       const markerData = {
+          //         name: place.name,
+          //         geometry: place.geometry,
+          //         tdx: {
+          //           totalSpaces: '未知',
+          //           availableSpaces: '未知',
+          //           fareDescription: '價格：無資訊',
+          //           phone: '無資訊',
+          //           hours: '無資訊'
+          //         }
+          //       };
+          //       createMarker(markerData);
+          //     });
+          //   }
+          // });
 
         } else {
           alert("找不到地點，請輸入其他內容");
