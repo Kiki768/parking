@@ -416,15 +416,20 @@
       });
       service = new google.maps.places.PlacesService(map);
 
-      // 收藏的停車場
+      // 延遲載入 TDX 停車資料
+      loadTDXData();
+
+      // 檢查 localStorage 收藏跳轉
       const selected = JSON.parse(localStorage.getItem("selectedPlace"));
       if (selected && selected.lat && selected.lng) {
+        const lat = Number(selected.lat);
+        const lng = Number(selected.lng);
         const place = {
           name: selected.name,
           geometry: {
-            location: new google.maps.LatLng(selected.lat, selected.lng)
+            location: new google.maps.LatLng(lat, lng)
           },
-          tdx: selected.tdx || {
+          tdx: typeof selected.tdx === 'object' ? selected.tdx : {
             totalSpaces: '無資訊',
             availableSpaces: '無資訊',
             fareDescription: '價格：無資訊',
@@ -433,16 +438,16 @@
           }
         };
 
-        setTimeout(() => {
+        // 等地圖完全載入後再設定 marker
+        google.maps.event.addListenerOnce(map, 'idle', () => {
           createMarker(place);
           map.setCenter(place.geometry.location);
           map.setZoom(17);
           localStorage.removeItem("selectedPlace");
-        }, 300);
+        });
       }
-      // 延遲載入 TDX 停車資料
-      loadTDXData();
     }
+
 
     async function loadTDXData() {
       try {
