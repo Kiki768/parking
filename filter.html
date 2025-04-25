@@ -186,6 +186,16 @@
     .button-scroll::-webkit-scrollbar {
       display: none; /* 隱藏滾動條 */
     }
+    /* 優先順序 */
+    .dropdown-select {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
   </style>
 </head>
 <body>
@@ -225,6 +235,40 @@
       <button class="circle-button" onclick="toggleActive(this)">機車</button>
       <button class="circle-button" onclick="toggleActive(this)">充電樁</button>
       <button class="circle-button" onclick="toggleActive(this)">共享單車</button>
+    </div>
+  </div>
+
+  <!-- 優先排序（三個下拉選單） -->
+  <div class="section">
+    <div class="section-title">優先篩選順序</div>
+    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+      <div>
+        <label for="priority1">1.</label>
+        <select id="priority1" class="dropdown-select" onchange="saveState()">
+          <option value="">請選擇</option>
+          <option value="價格">價格</option>
+          <option value="距離">距離</option>
+          <option value="剩餘車位">剩餘車位</option>
+        </select>
+      </div>
+      <div>
+        <label for="priority2">2.</label>
+        <select id="priority2" class="dropdown-select" onchange="saveState()">
+          <option value="">請選擇</option>
+          <option value="價格">價格</option>
+          <option value="距離">距離</option>
+          <option value="剩餘車位">剩餘車位</option>
+        </select>
+      </div>
+      <div>
+        <label for="priority3">3.</label>
+        <select id="priority3" class="dropdown-select" onchange="saveState()">
+          <option value="">請選擇</option>
+          <option value="價格">價格</option>
+          <option value="距離">距離</option>
+          <option value="剩餘車位">剩餘車位</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -281,9 +325,13 @@
 
         // Remove all active buttons
         document.querySelectorAll('.circle-button').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('priority1').value = "";
+        document.getElementById('priority2').value = "";
+        document.getElementById('priority3').value = "";
         
         // 清除localStorage
         localStorage.clear();
+
       }
 
     // 儲存當前的篩選狀態
@@ -291,6 +339,10 @@
         const autoNavigateState = document.getElementById('autoNavigateToggle').checked;
         const bookingState = document.getElementById('bookingToggle').checked;
         const priceValue = document.getElementById('priceRange').value;
+        const priority1 = document.getElementById('priority1').value;
+        const priority2 = document.getElementById('priority2').value;
+        const priority3 = document.getElementById('priority3').value;
+
         
         // 儲存車種篩選選項（車種篩選在 .vehicle-buttons 裡）
         const activeVehicles = Array.from(document.querySelectorAll('.vehicle-buttons .circle-button.active')).map(button => button.textContent);
@@ -303,7 +355,10 @@
             booking: bookingState,
             price: parseInt(priceValue),  // 儲存價格為數字
             vehicles: activeVehicles,  // 儲存車種篩選選項
-            slots: activeSlots         // 儲存車格種類篩選選項
+            slots: activeSlots,       // 儲存車格種類篩選選項
+            priority1: priority1,
+            priority2: priority2,
+            priority3: priority3
         };
 
         localStorage.setItem('filterState', JSON.stringify(state));
@@ -334,6 +389,11 @@
                 const button = Array.from(document.querySelectorAll('.slot-buttons .circle-button')).find(b => b.textContent === slot);
                 if (button) button.classList.add('active');
             });
+
+            if (state.priority1) document.getElementById('priority1').value = state.priority1;
+            if (state.priority2) document.getElementById('priority2').value = state.priority2;
+            if (state.priority3) document.getElementById('priority3').value = state.priority3;
+
         }
     }
 
