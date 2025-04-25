@@ -631,8 +631,10 @@
 
           let availableSpacesInfo = {};
 
-          if (item.availabilities && Array.isArray(item.availabilities)) {
-            item.availabilities.forEach(space => {
+          // if (item.availabilities && Array.isArray(item.availabilities)) {
+          if (item.availableSpaces && Array.isArray(item.availableSpaces)) {
+            // item.availabilities.forEach(space => {
+              item.availableSpaces.forEach(space => {
               switch(space.SpaceType) {
                 case 1: // 汽車
                   availableSpacesInfo.car = {
@@ -786,19 +788,29 @@
       const phone = tdxInfo.phone || '無提供';
       const hours = tdxInfo.hours;  // 格式化營業時間
 
+      let carStr = availableSpaces.car
+      ? `汽車剩餘：${availableSpaces.car.available}/${availableSpaces.car.total} 位<br>`
+      : '';
+    let motorStr = availableSpaces.motor
+      ? `機車剩餘：${availableSpaces.motor.available}/${availableSpaces.motor.total} 位<br>`
+      : '';
+    let evStr = availableSpaces.ev
+      ? `電動車剩餘：${availableSpaces.ev.available}/${availableSpaces.ev.total} 位`
+      : '';
+
+      // <div><font color="red"> 
+      //   ${`汽車剩餘：${availableSpaces.car.available}/${availableSpaces.car.total} 位<br>`} 
+      //   ${`機車剩餘：${availableSpaces.motor.available}/${availableSpaces.motor.total} 位<br>`} 
+      //   ${`電動車剩餘：${availableSpaces.ev.available}/${availableSpaces.ev.total} 位`} 
+      // </font></div>
+
       let infoWindow = new google.maps.InfoWindow({
         content: `
           <div style='text-align:center; font-family: Arial, sans-serif;'>
             <div style='font-weight:bold; margin-bottom:8px;'>${place.name}</div>
             <div class="scroll-info">
               <div><u>總車位</u> ${totalSpaces} 位</div>
-              <div><font color="red">
-                <div><font color="red"> 
-                  ${`汽車剩餘：${availableSpaces.car.available}/${availableSpaces.car.total} 位<br>`} 
-                  ${`機車剩餘：${availableSpaces.motor.available}/${availableSpaces.motor.total} 位<br>`} 
-                  ${`電動車剩餘：${availableSpaces.ev.available}/${availableSpaces.ev.total} 位`} 
-                </font></div>
-              </font></div>
+              <div><font color="red">${carStr}${motorStr}${evStr}</font></div>
               <div>${fareDesc}</div>
               <div>營業時間：${hours}</div>
               <div>電話：${phone}</div>
