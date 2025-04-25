@@ -470,15 +470,40 @@
         // 取得營業時間資料
         const serviceTimes = await loadServiceTimes(token);
 
+        // 獲取剩餘車位資料
+        const availabilityRes = await fetch("https://tdx.transportdata.tw/api/basic/v1/Parking/OffStreet/ParkingAvailability/City/Taipei", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        if (!availabilityRes.ok) {
+          throw new Error("獲取剩餘車位資料失敗，狀態碼：" + availabilityRes.status);
+        }
+
+        const availabilityResult = await availabilityRes.json();
+        // console.log("停車場可用車位資料：", availabilityResult); // 印出整個回應
+        const availabilities = availabilityResult.ParkingAvailabilities || [];
+        // console.log("處理後的可用車位資料：", availabilities); // 印出處理後的陣列
+
+        // 以上確實能正確取得資料
+
         // 處理每一個停車場資料
         tdxCarParks = carParks.map(carPark => {
           const openingHours = serviceTimes.find(service => service.CarParkID === carPark.CarParkID);
-          
+          const availability = availabilities.find(avail => avail.CarParkID === carPark.CarParkID);
+
           // 如果找到了對應的開放時間，加入到停車場資料中
           if (openingHours) {
             carPark.openingHours = openingHours.OpeningHours;  // 將開放時間加入資料
           } else {
             carPark.openingHours = '無營業時間資料';  // 如果沒有找到開放時間，設為'無營業時間資料'
+          }
+
+          // 如果找到了對應的剩餘車位資料，加入到停車場資料中
+          if (availability) {
+            carPark.availableSpaces = availability.Availabilities;  // 修改：儲存完整的車位資訊陣列
+            carPark.totalSpaces = availability.TotalSpaces;
           }
 
           return carPark;  // 返回每個處理過的停車場資料
@@ -598,6 +623,39 @@
           console.log("Item object:", item); // 打印每個停車場的完整資料
           console.log("OpeningHours:", item.openingHours);  // 確保拿到的資料正確
           const hours = item.openingHours ? formatServiceHours(item.openingHours) : '未提供';      
+          
+          // 解析各種車位資訊
+          let carSpaces = '未知';
+          let motorSpaces = '未知';
+          let evSpaces = '未知';
+
+          let availableSpacesInfo = {};
+
+          if (item.availabilities && Array.isArray(item.availabilities)) {
+            item.availabilities.forEach(space => {
+              switch(space.SpaceType) {
+                case 1: // 汽車
+                  availableSpacesInfo.car = {
+                    available: space.AvailableSpaces,
+                    total: space.NumberOfSpaces
+                  };
+                  break;
+                case 2: // 機車
+                  availableSpacesInfo.motor = {
+                    available: space.AvailableSpaces,
+                    total: space.NumberOfSpaces
+                  };
+                  break;
+                case 11: // 電動車
+                  availableSpacesInfo.ev = {
+                    available: space.AvailableSpaces,
+                    total: space.NumberOfSpaces
+                  };
+                  break;
+              }
+            });
+          }
+          
           const markerData = {
             name: item.CarParkName.Zh_tw,
             geometry: {
@@ -606,12 +664,21 @@
             // 抓tdx中的資料
             tdx: {
               totalSpaces: item.Description?.match(/小型車:(\d+)/)?.[1] || '未知', //總車位
-              availableSpaces: '未知',
+              // availableSpaces: item.availableSpaces || '未知', // 剩餘車位
+              // availableSpaces: {
+              //   car: carSpaces,
+              //   motor: motorSpaces,
+              //   ev: evSpaces
+              // },
+              availableSpaces: availableSpacesInfo,
               fareDescription: item.FareDescription || '無收費訊息',
               phone: item.EmergencyPhone || '無提供',
               hours: hours || '無提供'
             }
           };
+
+          console.log("可用車位資訊：", availableSpacesInfo); // 新增這行來輸出
+
           createMarker(markerData);
         }
       });
@@ -713,7 +780,8 @@
       // 嘗試取得 TDX 擴充資料
       const tdxInfo = place.tdx || {};
       const totalSpaces = tdxInfo.totalSpaces || '未知';
-      const availableSpaces = tdxInfo.availableSpaces || '未知';
+      // const availableSpaces = tdxInfo.availableSpaces || '未知';
+      const availableSpaces = tdxInfo.availableSpaces || {};
       const fareDesc = formatFareDescription(tdxInfo.fareDescription);
       const phone = tdxInfo.phone || '無提供';
       const hours = tdxInfo.hours;  // 格式化營業時間
@@ -723,7 +791,14 @@
           <div style='text-align:center; font-family: Arial, sans-serif;'>
             <div style='font-weight:bold; margin-bottom:8px;'>${place.name}</div>
             <div class="scroll-info">
-              <div><u>總車位</u> ${totalSpaces} 位　<font color="red">剩餘 ${availableSpaces} 位</font></div>
+              <div><u>總車位</u> ${totalSpaces} 位</div>
+              <div><font color="red">
+                <div><font color="red"> 
+                  ${`汽車剩餘：${availableSpaces.car.available}/${availableSpaces.car.total} 位<br>`} 
+                  ${`機車剩餘：${availableSpaces.motor.available}/${availableSpaces.motor.total} 位<br>`} 
+                  ${`電動車剩餘：${availableSpaces.ev.available}/${availableSpaces.ev.total} 位`} 
+                </font></div>
+              </font></div>
               <div>${fareDesc}</div>
               <div>營業時間：${hours}</div>
               <div>電話：${phone}</div>
