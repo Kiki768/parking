@@ -4,6 +4,15 @@
   本專案為**前端介面原型**（Prototype），部分頁面具備可實際互動功能，部分僅為**介面展示（UI Demo）**，用以呈現網站的整體架構與操作流程。
   是一款專為駕駛設計的智慧停車導航App，結合Google地圖與語音互動技術，旨在解決都市駕駛時苦尋停車位的痛點，直接點擊 https://kiki768.github.io/parking/ 即可開啟網頁。
 
-## 專案簡介
+## 功能簡介
+- 首頁與導航功能（index.html）
+- 支付頁面（pay.html）
+- 收藏與喜好標記（favorite.html）
+- 新聞與資訊頁面（news.html）
+- 設定（settings.html）
+- 道路設施問題回報表單（road_report.html）
+- 導航停車場篩選條件（filter.html）
+- 個人資料頁（profile.html）
+
   
 
