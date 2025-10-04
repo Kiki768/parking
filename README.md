@@ -14,5 +14,14 @@
 - 導航停車場篩選條件（filter.html）
 - 個人資料頁（profile.html）
 
+## 功能狀態
+| 頁面 | 功能 | 狀態 |
+|------|------|------|
+| index.html | 首頁導航 | ✅ 可使用 |
+| favorite.html | 收藏功能 | ✅ 可使用 |
+| report.html | 回報表單 | ⚠️ 介面展示 |
+| highway.html | 路況資訊 | ⚠️ 靜態內容 |
+| news.html | 新聞頁 | ⚠️ 展示用 |
+
   
 
